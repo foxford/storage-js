@@ -9,18 +9,12 @@ export class HttpStorageResource {
     this.httpClient = httpClient
     this.tokenProvider = tokenProvider
   }
-  sign (method, bucket, set, object, headers) {
+  sign (params) {
     return this.tokenProvider.getToken()
       .then((token) =>
         this.httpClient.post(
           `${this.baseUrl}/sign`,
-          {
-            method,
-            bucket,
-            set,
-            object,
-            headers
-          },
+          params,
           {
             headers: {
               authorization: `Bearer ${token}`,
@@ -31,15 +25,18 @@ export class HttpStorageResource {
       )
       .then((response) => response.data.uri)
   }
-  upload (bucket, set, object, headers, data, config) {
-    return this.sign('PUT', bucket, set, object, headers)
+  upload (params, data, config) {
+    return this.sign({
+      ...params,
+      method: 'PUT'
+    })
       .then((uri) =>
         this.httpClient.put(
           uri,
           data,
           {
             ...config,
-            ...{ headers }
+            ...{ headers: params.headers }
           }
         )
       )

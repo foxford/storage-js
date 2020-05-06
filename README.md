@@ -19,7 +19,7 @@ import {
 const TOKEN = 'jwt-token'
 const bucket = 'example-bucket'
 const set = '123'
-const object = 'file.json'
+const object = 'example.json'
 const headers = {
   'cache-control': 'max-age=31536000',
   'content-type': 'application/json'
@@ -34,7 +34,7 @@ const storage = new HttpStorageResource(
 )
 
 // signing request params
-storage.sign('PUT', bucket, set, object, headers)
+storage.sign({ method: 'PUT', bucket, set, object, headers })
   .then((response) => {
     console.log('[response]', response)
   })
@@ -43,7 +43,7 @@ storage.sign('PUT', bucket, set, object, headers)
   })
   
 // uploading data
-storage.upload(bucket, set, object, headers, data, {})
+storage.upload({ bucket, set, object, headers }, data, {})
   .then((response) => {
     console.log('[response]', response)
   })
